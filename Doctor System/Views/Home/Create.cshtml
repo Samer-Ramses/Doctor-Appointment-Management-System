@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+@*@using (Html.BeginForm("Save" , "Home" ))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.labelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title , new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.Title , null , new {@class= "text-danger"})
+    </div>
+}
+*@

@@ -17,8 +17,9 @@ namespace Doctor_System.Data
         public DbSet<Clinic> Clinics { get; set; }
         public DbSet<ClinicWorkingHours> ClinicsWorkingHours { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+		public IEnumerable<object> Doctor { get; internal set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+		protected override void OnModelCreating(ModelBuilder builder)
         {
 
             base.OnModelCreating(builder);

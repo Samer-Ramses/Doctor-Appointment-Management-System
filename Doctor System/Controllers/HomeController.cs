@@ -27,6 +27,22 @@ namespace Doctor_System.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		} 
+		public ActionResult Create()
+		{
+			return View();
 		}
-	}
+        public ActionResult Edit()
+        {
+            return View();
+        }
+        public ActionResult Delete()
+        {
+            return View();
+        }
+        public ActionResult Update()
+        {
+            return View();
+        }
+    }
 }
