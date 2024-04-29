@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Doctor_System.Models
+@model Doctor_System.Models.DoctorSpecialization
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+}
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h4 class="alert alert-primary" role="alert">Add specialization</h4>
+        <div class="row p-3 justify-content-center" style="background: #f4f4f4; border-radius: 15px">
+            <div class="col-md-10">
+                <form asp-action="AddSpec">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group m-3">
+                        <input type="hidden" asp-for="DoctorId" class="form-control" value="@currentUser.Id">
+                    </div>
+
+                    <div class="form-group m-3">
+                        <label asp-for="Specialization" class="control-label"></label>
+                        <input asp-for="Specialization" class="form-control" />
+                        <span asp-validation-for="Specialization" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group d-flex justify-content-center gap-1">
+                        <input class="btn btn-outline-success float right" type="submit" value="Add" />
+                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

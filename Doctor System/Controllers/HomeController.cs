@@ -1,4 +1,5 @@
 ﻿using Doctor_System.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +8,22 @@ namespace Doctor_System.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-		public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
 		{
 			_logger = logger;
+			_userManager = userManager;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			return View();
+            var current = await _userManager.GetUserAsync(User);
+            if (current != null)
+            {
+                return RedirectToAction("Index", "Profile");
+            }
+            return View();
 		}
 
 		public IActionResult Privacy()

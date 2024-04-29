@@ -132,7 +132,7 @@ namespace Doctor_System.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("Doctor_Appointment_Management_System.Models.Clinic", b =>
@@ -168,7 +168,7 @@ namespace Doctor_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clinics");
+                    b.ToTable("Clinics", (string)null);
                 });
 
             modelBuilder.Entity("Doctor_Appointment_Management_System.Models.ClinicWorkingHours", b =>
@@ -196,7 +196,7 @@ namespace Doctor_System.Migrations
 
                     b.HasIndex("ClinicId");
 
-                    b.ToTable("ClinicsWorkingHours");
+                    b.ToTable("ClinicsWorkingHours", (string)null);
                 });
 
             modelBuilder.Entity("Doctor_Appointment_Management_System.Models.DoctorSpecialization", b =>
@@ -220,7 +220,7 @@ namespace Doctor_System.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorsSpecializations");
+                    b.ToTable("DoctorsSpecializations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

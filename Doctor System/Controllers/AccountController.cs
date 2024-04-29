@@ -10,8 +10,8 @@ namespace Doctor_System.Controllers
 	public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, RoleManager<IdentityRole> roleManager)
@@ -37,22 +37,46 @@ namespace Doctor_System.Controllers
                 TempData["Error"] = "This email address is already in use";
                 return View(registerViewModel);
             }
-
-            var newUser = new ApplicationUser()
+            
+            if (registerViewModel.Role == "Doctor")
             {
-                Email = registerViewModel.EmailAddress,
-                UserName = registerViewModel.EmailAddress,
-                Name = registerViewModel.Name,
-                Age = registerViewModel.Age,
-                PhoneNumber = registerViewModel.PhoneNumber,
-            };
-            var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
-            if (!newUserResponse.Succeeded){
-                TempData["Error"] = newUserResponse.Errors.First().Description;
-                return View(registerViewModel);
-            }else{
-                await _userManager.AddToRoleAsync(newUser, registerViewModel.Role);
+                var newUser = new Doctor()
+                {
+                    Email = registerViewModel.EmailAddress,
+                    UserName = registerViewModel.EmailAddress,
+                    Name = registerViewModel.Name,
+                    Age = registerViewModel.Age,
+                    PhoneNumber = registerViewModel.PhoneNumber,
+                };
+                var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
+                if (!newUserResponse.Succeeded){
+                    TempData["Error"] = newUserResponse.Errors.First().Description;
+                    return View(registerViewModel);
+                }else{
+                    await _userManager.AddToRoleAsync(newUser, registerViewModel.Role);
+                }
+            }else
+            {
+                var newUser = new Patient()
+                {
+                    Email = registerViewModel.EmailAddress,
+                    UserName = registerViewModel.EmailAddress,
+                    Name = registerViewModel.Name,
+                    Age = registerViewModel.Age,
+                    PhoneNumber = registerViewModel.PhoneNumber,
+                };
+                var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
+                if (!newUserResponse.Succeeded)
+                {
+                    TempData["Error"] = newUserResponse.Errors.First().Description;
+                    return View(registerViewModel);
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(newUser, registerViewModel.Role);
+                }
             }
+
 
             return RedirectToAction("Index", "Home");
         }

@@ -1,0 +1,86 @@
+﻿@using Doctor_System.Models
+﻿@using Microsoft.AspNetCore.Identity
+
+@model Doctor_System.ViewModels.ProfileViewModel
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+	@if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Doctor"))
+	{
+		<div class="mx-auto" style="width: 20rem">
+			<img src="@Url.Content(Model.Doctor.ImgPath)" class="img-thumbnail img-fluid" alt="Profile Picture">
+		</div>
+		<h1>Profile</h1>
+
+		<div>
+			<h4>@Model.Doctor.Name</h4>
+			<hr />
+			<dl class="row">
+
+				<dt class="col-sm-2">
+					Age
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Doctor.Age
+				</dd>
+				<dt class="col-sm-2">
+					Email
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Doctor.Email
+				</dd>
+				<dt class="col-sm-2">
+					Phone
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Doctor.PhoneNumber
+				</dd>
+				<dt class="col-sm-2">
+					Specializations
+				</dt>
+				<dd class="col-sm-10">
+					@if (Model.Doctor.Specializations != null)
+					{
+						@foreach(var item in Model.Doctor.Specializations)
+						{
+							@(item.Specialization + ",")
+						}
+					}
+					<a class="btn btn-primary" asp-controller="Doctor" asp-action="AddSpec">Add Specialization</a>
+				</dd>
+			</dl>
+		</div>
+		}else
+		{
+		<h1>Profile</h1>
+
+		<div>
+			<h4>@Model.Patient.Name</h4>
+			<hr />
+			<dl class="row">
+
+				<dt class="col-sm-2">
+					Age
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Patient.Age
+				</dd>
+				<dt class="col-sm-2">
+					Email
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Patient.Email
+				</dd>
+				<dt class="col-sm-2">
+					Phone
+				</dt>
+				<dd class="col-sm-10">
+					@Model.Patient.PhoneNumber
+				</dd>
+			</dl>
+		</div>
+		}
+	}

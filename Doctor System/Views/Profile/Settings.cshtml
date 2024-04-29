@@ -1,0 +1,70 @@
+﻿@using Doctor_System.Models
+﻿@using Microsoft.AspNetCore.Identity
+
+@model Doctor_System.ViewModels.EditUserViewModel
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h4 class="alert alert-primary" role="alert">Sign up for a new account</h4>
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"] </span>
+            </div>
+        }
+
+        <div class="row p-3 justify-content-center" style="background: #f4f4f4; border-radius: 15px">
+            <div class="col-md-10">
+                <form asp-action="Settings" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group m-3">
+                        <label asp-for="EmailAddress" class="control-label"></label>
+                        <input asp-for="EmailAddress" type="email" class="form-control" />
+                        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="PhoneNumber" class="control-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="Age" class="control-label"></label>
+                        <input asp-for="Age" class="form-control" />
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Doctor"))
+                    {
+                        <div class="form-group m-3">
+                            <label asp-for="ProfilePicture" class="control-label"></label>
+                            <input asp-for="ProfilePicture" type="file" class="form-control" />
+                            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                        </div>
+                    }
+                    <div class="form-group d-flex justify-content-center gap-1">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Edit" />
+                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
