@@ -78,44 +78,52 @@ namespace Doctor_System.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var currentUser = _context.Doctors.FirstOrDefault(x => x.Id == current.Id);
-            if (currentUser == null)
+            if (currentUser != null)
             {
-                return RedirectToAction("Index", "Home");
-            }
-            string filePath = currentUser.ImgPath == null ? "" : currentUser.ImgPath;
-			// Process profile picture
-			if (editUserViewModel.ProfilePicture != null && editUserViewModel.ProfilePicture.Length > 0)
-            {
-				// Delete old image if exists
-				if (!string.IsNullOrEmpty(currentUser.ImgPath))
+				string filePath = currentUser.ImgPath == null ? "" : currentUser.ImgPath;
+				// Process profile picture
+				if (editUserViewModel.ProfilePicture != null && editUserViewModel.ProfilePicture.Length > 0)
 				{
-					string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, currentUser.ImgPath.TrimStart('/'));
-					if (System.IO.File.Exists(oldImagePath))
+					// Delete old image if exists
+					if (!string.IsNullOrEmpty(currentUser.ImgPath))
 					{
-						System.IO.File.Delete(oldImagePath);
+						string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, currentUser.ImgPath.TrimStart('/'));
+						if (System.IO.File.Exists(oldImagePath))
+						{
+							System.IO.File.Delete(oldImagePath);
+						}
 					}
+
+					string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+					string uniqueFileName = Guid.NewGuid().ToString() + "_" + editUserViewModel.ProfilePicture.FileName;
+					filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+					using (var fileStream = new FileStream(filePath, FileMode.Create))
+					{
+						await editUserViewModel.ProfilePicture.CopyToAsync(fileStream);
+					}
+					currentUser.ImgPath = "/images/" + uniqueFileName;
 				}
+				currentUser.Email = editUserViewModel.EmailAddress;
+				currentUser.UserName = editUserViewModel.EmailAddress;
+				currentUser.Name = editUserViewModel.Name;
+				currentUser.Age = editUserViewModel.Age;
+				currentUser.PhoneNumber = editUserViewModel.PhoneNumber;
 
-				string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + editUserViewModel.ProfilePicture.FileName;
-                filePath = Path.Combine(uploadsFolder, uniqueFileName);
+				var editedUserResponse = await _userManager.UpdateAsync(currentUser);
+			}else
+			{
+				current.Email = editUserViewModel.EmailAddress;
+				current.UserName = editUserViewModel.EmailAddress;
+				current.Name = editUserViewModel.Name;
+				current.Age = editUserViewModel.Age;
+				current.PhoneNumber = editUserViewModel.PhoneNumber;
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await editUserViewModel.ProfilePicture.CopyToAsync(fileStream);
-                }
-                currentUser.ImgPath = "/images/" + uniqueFileName;
-            }
+				var editedUserResponse = await _userManager.UpdateAsync(current);
+			}
 
-            currentUser.Email = editUserViewModel.EmailAddress;
-            currentUser.UserName = editUserViewModel.EmailAddress;
-            currentUser.Name = editUserViewModel.Name;
-            currentUser.Age = editUserViewModel.Age;
-            currentUser.PhoneNumber = editUserViewModel.PhoneNumber;
 
-            var editedUserResponse = await _userManager.UpdateAsync(currentUser);
-
-            return RedirectToAction("Index", "Home");
+			return RedirectToAction("Index", "Home");
         }
     }
 }
