@@ -1,0 +1,86 @@
+﻿@using Doctor_System.ViewModels
+@model ClinicViewModel
+
+@if(Model == null)
+{
+	<div class="d-flex flex-column align-items-center" style="margin: 9rem 0">
+		<p class="text-capitalize">you don't have an clinic yet add one!'</p>
+		<a asp-controller="Doctor" asp-action="AddClinic" class="btn btn-primary">Add Clinic</a>
+	</div>
+}else
+{
+	<h1>Clinic</h1>
+	<div>
+		<h4>Details</h4>
+		<hr />
+		<dl class="row">
+			<dt class="col-sm-2">
+				Doctor
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Doctor.Name
+			</dd>
+			<dt class="col-sm-2">
+				Email
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Clinic.Email
+			</dd>
+			<dt class="col-sm-2">
+				Phone
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Clinic.Phone
+			</dd>
+			<dt class="col-sm-2">
+				Address
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Clinic.Address
+			</dd>
+			<dt class="col-sm-2">
+				Price
+			</dt>
+			<dd class="col-sm-10">
+				@Model.Clinic.Price$
+			</dd>
+		</dl>
+		<hr />
+		<h4>Working hours</h4>
+		@if(Model.ClinicWorkingHours.Count == 0)
+		{
+			<a asp-controller="Doctor" asp-action="AddWorkingHours">Add Working Hours</a>
+		}else
+		{
+			@if(Model.ClinicWorkingHours.Count < 7)
+			{
+				<a asp-controller="Doctor" asp-action="AddWorkingHours">Add Working Hours</a>
+			}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">Day</th>
+						<th scope="col">Opening Time</th>
+						<th scope="col">Closing Time</th>
+						<th scope="col">Operations</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						foreach (var item in Model.ClinicWorkingHours)
+						{
+							<tr>
+								<td>@item.DayOfWeek</td>
+								<td>@item.OpeningTime</td>
+								<td>@item.ClosingTime</td>
+								<td>
+									<a asp-controller="Doctor" asp-action="DeleteWorkingHours" asp-route-Day="@item.DayOfWeek" class="btn btn-danger btn-sm">Delete</a>
+								</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		}
+	</div>
+}

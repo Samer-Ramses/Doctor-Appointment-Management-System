@@ -46,7 +46,9 @@
 					{
 						@foreach(var item in Model.Doctor.Specializations)
 						{
-							@(item.Specialization + ",")
+							@(item.Specialization)
+							<a class="btn btn-danger" asp-action="DeleteSpec" asp-controller="Doctor" asp-route-id="@item.Id">X</a>
+							@(", ")
 						}
 					}
 					<a class="btn btn-primary" asp-controller="Doctor" asp-action="AddSpec">Add Specialization</a>

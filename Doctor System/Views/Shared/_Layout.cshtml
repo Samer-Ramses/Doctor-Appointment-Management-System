@@ -44,21 +44,24 @@
 						}
 						else
 						{
-							@* if (await UserManager.IsInRoleAsync(currentUser, "Admin"))
-						{
-						<li>
-						<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Control Panel</a>
-						</li>
-						}
-						else if (await UserManager.IsInRoleAsync(currentUser, "Student"))
-						{
-						<li>
-						<a class="nav-link" asp-area="" asp-controller="Student" asp-action="Index">Control Panel</a>
-						</li>
-						} *@
 							<li class="nav-item">
 								<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
 							</li>
+							if (await UserManager.IsInRoleAsync(currentUser, "Doctor"))
+							{
+								<li>
+									<a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="Clinic">Clinic</a>
+								</li>
+								<li>
+									<a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="Appointments">Appointments</a>
+								</li>
+							}
+							else if (await UserManager.IsInRoleAsync(currentUser, "Patient"))
+							{
+								<li>
+									<a class="nav-link" asp-area="" asp-controller="Student" asp-action="Index">Control Panel</a>
+								</li>
+							}
 							<li class="nav-item ms-auto">
 								<a class="btn btn-primary" asp-area="" asp-controller="Profile" asp-action="Settings">Settings</a>
 							</li>

@@ -68,22 +68,29 @@ namespace Doctor_System.Controllers
 			return View(registerViewModel);
 		}
 
-        [HttpPost]
-        public async Task<IActionResult> Settings(EditUserViewModel editUserViewModel)
-        {
-            if (!ModelState.IsValid) return View(editUserViewModel);
-            var current = await _userManager.GetUserAsync(User);
-            if (current == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            var currentUser = _context.Doctors.FirstOrDefault(x => x.Id == current.Id);
-            if (currentUser != null)
-            {
+		[HttpPost]
+		public async Task<IActionResult> Settings(EditUserViewModel editUserViewModel)
+		{
+			if (!ModelState.IsValid) return View(editUserViewModel);
+			var current = await _userManager.GetUserAsync(User);
+			if (current == null)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+			var currentUser = _context.Doctors.FirstOrDefault(x => x.Id == current.Id);
+			if (currentUser != null)
+			{
 				string filePath = currentUser.ImgPath == null ? "" : currentUser.ImgPath;
 				// Process profile picture
 				if (editUserViewModel.ProfilePicture != null && editUserViewModel.ProfilePicture.Length > 0)
 				{
+					// Check if the uploaded file is an image
+					if (!IsImageFile(editUserViewModel.ProfilePicture))
+					{
+						ModelState.AddModelError("ProfilePicture", "The file is not an image.");
+						return View(editUserViewModel);
+					}
+
 					// Delete old image if exists
 					if (!string.IsNullOrEmpty(currentUser.ImgPath))
 					{
@@ -111,7 +118,8 @@ namespace Doctor_System.Controllers
 				currentUser.PhoneNumber = editUserViewModel.PhoneNumber;
 
 				var editedUserResponse = await _userManager.UpdateAsync(currentUser);
-			}else
+			}
+			else
 			{
 				current.Email = editUserViewModel.EmailAddress;
 				current.UserName = editUserViewModel.EmailAddress;
@@ -124,6 +132,13 @@ namespace Doctor_System.Controllers
 
 
 			return RedirectToAction("Index", "Home");
-        }
-    }
+		}
+
+		// Method to check if the uploaded file is an image
+		private bool IsImageFile(IFormFile file)
+		{
+			if (file == null) return false;
+			return file.ContentType.ToLower().StartsWith("image/");
+		}
+	}
 }

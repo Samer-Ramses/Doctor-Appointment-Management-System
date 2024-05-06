@@ -1,0 +1,62 @@
+﻿@using Doctor_System.ViewModels
+@using Microsoft.AspNetCore.Identity;
+@using Doctor_System.Models
+@model AddClinicViewModel
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+}
+
+
+@{
+    ViewData["Title"] = "Add Clinic";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h4 class="alert alert-primary" role="alert">Add Clinic</h4>
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"]</span>
+            </div>
+        }
+        <div class="row p-3 justify-content-center" style="background: #f4f4f4; border-radius: 15px">
+            <div class="col-md-10">
+                <form asp-action="AddClinic">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group m-3">
+                        <input type="hidden" asp-for="DoctorId" class="form-control" value="@currentUser.Id">
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="PhoneNumber" class="control-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="EmailAddress" class="control-label"></label>
+                        <input asp-for="EmailAddress" class="form-control">
+                        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="Address" class="control-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group m-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group d-flex justify-content-center gap-1">
+                        <input class="btn btn-outline-success float right" type="submit" value="Add" />
+                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

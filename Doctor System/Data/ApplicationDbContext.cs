@@ -21,6 +21,7 @@ namespace Doctor_System.Data
 
 		protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ClinicWorkingHours>().HasKey(ch => new { ch.ClinicId, ch.DayOfWeek });
 
             base.OnModelCreating(builder);
             builder.Entity<IdentityRole>().HasData(SeedRoles());
