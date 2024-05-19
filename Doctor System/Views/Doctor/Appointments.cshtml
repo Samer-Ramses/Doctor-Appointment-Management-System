@@ -1,44 +1,6 @@
-﻿@using Doctor_System.ViewModels
-@model AddAppointmentViewModel
-
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
 @{
-    ViewData["Title"] = "Add Appointment";
 }
-
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h4 class="alert alert-primary" role="alert">Add Appointment</h4>
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                <strong>Sorry!</strong> - @TempData["Error"]
-            </div>
-        }
-        <div class="row p-3 justify-content-center" style="background: #f4f4f4; border-radius: 15px">
-            <div class="col-md-10">
-                <form asp-action="AddAppointment">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group m-3">
-                        <label asp-for="PatientName" class="control-label">Patient Name</label>
-                        <input asp-for="PatientName" class="form-control">
-                        <span asp-validation-for="PatientName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group m-3">
-                        <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
-                        <input asp-for="AppointmentDate" type="date" class="form-control">
-                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
-                    </div>
-                    <div class="form-group m-3">
-                        <label asp-for="AppointmentTime" class="control-label">Appointment Time</label>
-                        <input asp-for="AppointmentTime" type="time" class="form-control">
-                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-                    </div>
-                    <div class="form-group d-flex justify-content-center gap-1">
-                        <input class="btn btn-outline-success float-right" type="submit" value="Add" />
-                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>Appointments</h1>
