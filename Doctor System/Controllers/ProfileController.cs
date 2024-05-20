@@ -60,7 +60,6 @@ namespace Doctor_System.Controllers
             EditUserViewModel registerViewModel = new()
             {
 				Age = currentUser.Age,
-				EmailAddress = currentUser.Email,
 				Name = currentUser.Name,
 				PhoneNumber = currentUser.PhoneNumber,
 			};
@@ -72,11 +71,17 @@ namespace Doctor_System.Controllers
 		public async Task<IActionResult> Settings(EditUserViewModel editUserViewModel)
 		{
 			if (!ModelState.IsValid) return View(editUserViewModel);
-			var current = await _userManager.GetUserAsync(User);
+            var current = await _userManager.GetUserAsync(User);
 			if (current == null)
 			{
 				return RedirectToAction("Index", "Home");
 			}
+            var phone = _context.Users.FirstOrDefault(user => user.Id != current.Id &&  user.PhoneNumber == editUserViewModel.PhoneNumber);
+            if (phone != null)
+            {
+                TempData["Error"] = "This phone number is already in use";
+                return View(editUserViewModel);
+            }
 			var currentUser = _context.Doctors.FirstOrDefault(x => x.Id == current.Id);
 			if (currentUser != null)
 			{
@@ -111,22 +116,28 @@ namespace Doctor_System.Controllers
 					}
 					currentUser.ImgPath = "/images/" + uniqueFileName;
 				}
-				currentUser.Email = editUserViewModel.EmailAddress;
-				currentUser.UserName = editUserViewModel.EmailAddress;
 				currentUser.Name = editUserViewModel.Name;
 				currentUser.Age = editUserViewModel.Age;
 				currentUser.PhoneNumber = editUserViewModel.PhoneNumber;
 
+				if (editUserViewModel.Password != null)
+				{
+					await _userManager.RemovePasswordAsync(currentUser);
+					await _userManager.AddPasswordAsync(currentUser, editUserViewModel.Password);
+				}
 				var editedUserResponse = await _userManager.UpdateAsync(currentUser);
 			}
 			else
 			{
-				current.Email = editUserViewModel.EmailAddress;
-				current.UserName = editUserViewModel.EmailAddress;
 				current.Name = editUserViewModel.Name;
 				current.Age = editUserViewModel.Age;
 				current.PhoneNumber = editUserViewModel.PhoneNumber;
 
+				if (editUserViewModel.Password != null)
+				{
+					await _userManager.RemovePasswordAsync(current);
+					await _userManager.AddPasswordAsync(current, editUserViewModel.Password);
+				}
 				var editedUserResponse = await _userManager.UpdateAsync(current);
 			}
 

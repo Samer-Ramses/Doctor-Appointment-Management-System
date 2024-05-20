@@ -7,10 +7,6 @@ namespace Doctor_System.ViewModels
 	{
 		[Required]
 		public string DoctorId { get; set; }
-		[Display(Name = "Phone Number")]
-		[Required(ErrorMessage = "The phone number is required")]
-		[RegularExpression(@"^(010|011|012|015)\d{8}$", ErrorMessage = "Invalid phone number format. The phone number must start with 010, 011, 012, or 015 and have 11 digits.")]
-		public string PhoneNumber { get; set; }
 		[Display(Name = "Email address")]
 		[Required(ErrorMessage = "Email address is required")]
 		public string EmailAddress { get; set; }

@@ -45,7 +45,9 @@
 						else
 						{
 							<li class="nav-item">
-								<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+								<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">
+									@(await UserManager.IsInRoleAsync(currentUser, "Admin") ? "Operations" : "Profile")
+								</a>
 							</li>
 							if (await UserManager.IsInRoleAsync(currentUser, "Doctor"))
 							{
@@ -53,13 +55,16 @@
 									<a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="Clinic">Clinic</a>
 								</li>
 								<li>
-									<a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="Appointments">Appointments</a>
+									<a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="DoctorAppointments">Appointments</a>
 								</li>
 							}
 							else if (await UserManager.IsInRoleAsync(currentUser, "Patient"))
 							{
 								<li>
-									<a class="nav-link" asp-area="" asp-controller="Student" asp-action="Index">Control Panel</a>
+									<a class="nav-link" asp-area="" asp-controller="Patient" asp-action="AllClinics">Clinics</a>
+								</li>
+								<li>
+									<a class="nav-link" asp-area="" asp-controller="Patient" asp-action="YourAppointments">Your Appointments</a>
 								</li>
 							}
 							<li class="nav-item ms-auto">

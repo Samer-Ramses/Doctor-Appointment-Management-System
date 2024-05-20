@@ -55,8 +55,8 @@
 				</dd>
 			</dl>
 		</div>
-		}else
-		{
+	}
+	else if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Patient")){
 		<h1>Profile</h1>
 
 		<div>
@@ -84,5 +84,17 @@
 				</dd>
 			</dl>
 		</div>
-		}
+	}else
+	{
+		ViewData["Title"] = "Admin Control Panel";
+		var currentUser = await UserManager.GetUserAsync(User);
+
+		<h1 class="text-center">Welcome, @currentUser.Name</h1>
+		<div class="row text-center mt-5 gap-5 justify-content-center">
+			<div class="col-sm-3 col-12 border border-light-subtle p-5">
+				<h3>you can see all current users in the system by pressing below button</h3>
+				<a type="button" class="btn btn-primary mt-3" asp-area="" asp-controller="Admin" asp-action="AllUsers">Current users</a>
+			</div>
+		</div>
 	}
+}

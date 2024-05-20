@@ -1,0 +1,36 @@
+﻿@model List<Doctor_System.ViewModels.AppointmentSlotViewModel>
+
+@{
+    ViewData["Title"] = "Make Appointment";
+}
+
+<div class="container mt-5">
+    <h2>Available Appointment Slots</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Day of week</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var slot in Model)
+            {
+                <tr>
+                    <td>@slot.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@slot.Date.DayOfWeek.ToString()</td>
+                    <td>@slot.Date.ToString("HH:mm")</td>
+                    <td>
+                        <form method="post" action="Book">
+                            <input type="hidden" name="ClinicId" value="@slot.ClinicId" />
+                            <input type="hidden" name="Date" value="@slot.Date" />
+                            <button type="submit" class="btn btn-primary">Book</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

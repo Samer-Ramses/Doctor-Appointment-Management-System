@@ -4,6 +4,8 @@ using Doctor_System.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Doctor_System.Controllers
 {
@@ -34,13 +36,9 @@ namespace Doctor_System.Controllers
             var clinic = _context.Clinics.FirstOrDefault(cli => cli.DoctorId == current.Id);
 			if (clinic == null)
 			{
-				return RedirectToAction("Index", "Home");
+                return View();
 			}
 			var workingHours = _context.ClinicsWorkingHours.Where(cwh => cwh.ClinicId == clinic.Id).ToList();
-			if (workingHours == null)
-			{
-				return RedirectToAction("Index", "Home");
-			}
 
 			var model = new ClinicViewModel()
             {
@@ -59,11 +57,12 @@ namespace Doctor_System.Controllers
         public IActionResult AddClinic(AddClinicViewModel addClinicViewModel)
         {
             if (!ModelState.IsValid) return View(addClinicViewModel);
+            var doc = _context.Doctors.FirstOrDefault(doc => doc.Id == addClinicViewModel.DoctorId);
             Clinic clinic = new()
             {
                 DoctorId = addClinicViewModel.DoctorId,
                 Email = addClinicViewModel.EmailAddress,
-                Phone = addClinicViewModel.PhoneNumber,
+                Phone = doc.PhoneNumber,
                 Address = addClinicViewModel.Address,
                 Price = addClinicViewModel.Price,
             };
@@ -86,9 +85,14 @@ namespace Doctor_System.Controllers
 
             if(string.IsNullOrEmpty(Specialization))
             {
+                TempData["Error"] = "Specialization is required";
                 return View();
             }
-
+            var existSpec = _context.DoctorsSpecializations.FirstOrDefault(sp => (sp.DoctorId == docId.ToString() && sp.Specialization == Specialization.ToString()));
+            if (existSpec != null) {
+                TempData["Error"] = "This Specialization is already exist";
+                return View();
+            }
             DoctorSpecialization doctorSpecialization = new()
             {
                 DoctorId = docId,
@@ -165,11 +169,47 @@ namespace Doctor_System.Controllers
             return RedirectToAction("Clinic");
 		}
 
-
-		public IActionResult Appointments()
+        public IActionResult DoctorAppointments()
         {
-            return View();
+            // Assuming you have the current user's ID from your authentication system
+            var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Fetch appointments for the clinics that the current doctor manages
+            var appointments = _context.Appointments
+                .Include(a => a.Clinic)
+                .Include(a => a.Patient)
+                .Where(a => a.Clinic.DoctorId == doctorId)
+                .OrderBy(a => a.Date)
+                .ToList();
+
+            return View(appointments);
         }
 
-	}
+        [HttpPost]
+        public IActionResult Confirm(int appointmentId)
+        {
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == appointmentId);
+            if (appointment != null && appointment.Status != "confirmed")
+            {
+                appointment.Status = "confirmed";
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("DoctorAppointments");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int appointmentId)
+        {
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == appointmentId);
+            if (appointment != null)
+            {
+                _context.Appointments.Remove(appointment);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("DoctorAppointments");
+        }
+
+    }
 }

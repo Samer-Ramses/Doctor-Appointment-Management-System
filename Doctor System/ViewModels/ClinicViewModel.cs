@@ -6,6 +6,7 @@ namespace Doctor_System.ViewModels
 	{
 		public Clinic Clinic { get; set; }
 		public Doctor Doctor { get; set; }
+		public ICollection<DoctorSpecialization>? DoctorSpecializations { get; set; }
 		public ICollection<ClinicWorkingHours> ClinicWorkingHours { get; set; }
 	}
 }

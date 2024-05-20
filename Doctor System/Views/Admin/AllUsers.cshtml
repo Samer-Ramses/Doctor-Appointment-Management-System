@@ -1,0 +1,52 @@
+﻿@using Doctor_System.Models
+﻿@using Microsoft.AspNetCore.Identity
+﻿
+@model IEnumerable<ApplicationUser>
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "List of users";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="col-md-12 alert alert-danger">
+        <span><b>Sorry!</b> - @TempData["Error"] </span>
+    </div>
+}
+
+<h1>This is list of all current users in the system</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Operations</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+
+            int count = 0;
+            foreach (var item in Model)
+            {
+                var IsDoctor = await UserManager.IsInRoleAsync(item, "Doctor");
+                var IsPatient = await UserManager.IsInRoleAsync(item, "Patient");
+                if (!IsDoctor && !IsPatient) continue;
+                count++;
+                <tr>
+                    <th scope="row">@count</th>
+                    <td>@item.Name</td>
+                    <td>@item.Email</td>
+                    <td>@(IsDoctor ? "Doctor" : IsPatient ? "Patient" : "Admin")</td>
+                    <td>
+                        <a asp-action="Delete" asp-controller="Admin" asp-route-id=@item.Id type="button" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

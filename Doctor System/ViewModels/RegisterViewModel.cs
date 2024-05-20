@@ -1,9 +1,10 @@
 ﻿
+using Doctor_System.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace Doctor_System.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : IValidatableObject
     {
         [Display(Name = "Email address")]
         [Required(ErrorMessage = "Email address is required")]
@@ -30,5 +31,14 @@ namespace Doctor_System.ViewModels
         //[Required(ErrorMessage = "Image is reduired")]
         [Display(Name = "Profile Picture")]
         public IFormFile? ProfilePicture { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+
+            if (Role == Roles.Doctor && Age <= 26)
+            {
+                yield return new ValidationResult("Doctor age should be greater than 26", new[] { nameof(Role), nameof(Age) });
+            }
+        }
     }
 }

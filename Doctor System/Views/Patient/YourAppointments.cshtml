@@ -1,0 +1,51 @@
+﻿@model List<Doctor_System.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Your Appointments";
+}
+
+<div class="container mt-5">
+    <h2>Your Appointments</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Day of week</th>
+                <th>Time</th>
+                <th>Clinic Address</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model)
+            {
+                string badgeColor = "";
+                if (appointment.Status == "cancelled")
+                    badgeColor = "bg-danger";
+                else if (appointment.Status == "processing")
+                    badgeColor = "bg-info";
+                else
+                    badgeColor = "bg-success";
+                <tr>
+                    <td>@appointment.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@appointment.Date.DayOfWeek.ToString()</td>
+                    <td>@appointment.Date.ToString("HH:mm")</td>
+                    <td>@appointment.Clinic.Address</td>
+                    <td class="d-flex justify-content-center align-items-center" style="font-size: 1.3rem;">
+                        <span class="badge @badgeColor">@appointment.Status</span>
+                    </td>
+                    <td>
+                        <form method="post" action="Cancel">
+                            <input type="hidden" name="AppointmentId" value="@appointment.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm" @if (appointment.Status == "cancelled" || appointment.Status == "confirmed")
+                            {
+                                <text>disabled</text>
+                            }>Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

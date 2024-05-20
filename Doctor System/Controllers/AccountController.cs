@@ -37,7 +37,13 @@ namespace Doctor_System.Controllers
                 TempData["Error"] = "This email address is already in use";
                 return View(registerViewModel);
             }
-            
+            var phone = _context.Users.FirstOrDefault(u => u.PhoneNumber == registerViewModel.PhoneNumber);
+            if (phone != null)
+            {
+                TempData["Error"] = "This phone number is already in use";
+                return View(registerViewModel);
+            }
+
             if (registerViewModel.Role == "Doctor")
             {
                 var newUser = new Doctor()

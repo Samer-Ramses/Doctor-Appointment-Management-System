@@ -4,9 +4,6 @@ namespace Doctor_System.ViewModels
 {
     public class EditUserViewModel
     {
-        [Display(Name = "Email address")]
-        [Required(ErrorMessage = "Email address is required")]
-        public string EmailAddress { get; set; }
         [Required(ErrorMessage = "The name is required")]
         public string Name { get; set; }
 		[Display(Name = "Phone Number")]
